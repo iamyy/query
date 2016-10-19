@@ -29,8 +29,27 @@
     	return result;
     }
 
+    var class2type = {};
+
+    "Boolean Number String Function Array Date RegExp Object Error".split(" ").forEach( function(name, i) {
+        class2type["[object " + name + "]"] = name.toLowerCase()
+    } );
+
+    function type(obj) {
+        return obj == null ? String(obj) :
+            class2type[toString.call(obj)] || "object"
+    }
+
+    function isObject(obj) {
+        return type(obj) == "object"
+    }
+
     function isProto(x) {
-    	Object.getPrototypeOf(x) === _proto;
+        return  isObject( x ) && Object.getPrototypeOf(x) === _proto;
+    }
+
+    function toBeTrueArray( arrLike ) {
+        return Array.prototype.slice.call( arrLike );
     }
 
     function doForEach(els, result, handler) {
@@ -76,6 +95,8 @@
     			var el = this[0];
 
     			var dom = (el || document).querySelectorAll(selector);
+
+                dom = toBeTrueArray( dom );
 
     			dom.forEach(function(d, i, arr) {
     				result[i] = d;
